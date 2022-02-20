@@ -1,5 +1,5 @@
 #include "SimpleArray.h"
- SimpleArray::SimpleArray(AllocationTracker* ptr = nullptr)
+ SimpleArray::SimpleArray(AllocationTracker* ptr)
  {
     mArray = ptr;
  }
@@ -29,12 +29,18 @@ bool SimpleArray::isNonNull() const
 */
 AllocationTracker& SimpleArray::getReference(const uint32_t i) const
 {
-    return &(mArray[i]);
+    return mArray[i];
 }
 
 // Mutators
-AllocationTracker* SimpleArray::release();
-void SimpleArray::reset(AllocationTracker* rhs = nullptr)
+AllocationTracker* SimpleArray::release()
+{
+    AllocationTracker* ptr = this->mArray;
+    this->mArray = nullptr;
+    return ptr;
+}
+
+void SimpleArray::reset(AllocationTracker* rhs )
 {
     delete[] mArray;
     mArray = rhs;
@@ -43,8 +49,8 @@ void SimpleArray::reset(AllocationTracker* rhs = nullptr)
 
 void SimpleArray::swap(SimpleArray& rhs)
 {
-    auto t_ptr = rhs.getCount();
-    rhs.reset(this.get());
-    this.reset(t_ptr);
+    auto t_ptr = rhs.get();
+    rhs.reset(this->get());
+    this->reset(t_ptr);
     return;
 }
